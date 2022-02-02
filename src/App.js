@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Outlet } from "react-router-dom";
 import "./App.css";
 
@@ -14,17 +14,36 @@ function App() {
 }
 
 const Login = ({ setIsLogin }) => {
-  setIsLogin();
-  return <div></div>;
+  useEffect(() => {
+    setIsLogin(true);
+  });
+  return <div>로그인하쉐이~</div>;
 };
 
-const MyDiary = () => {
-  return <div>마이 다이어리~</div>;
+const Logout = ({ setIsLogin }) => {
+  useEffect(() => {
+    console.log(this);
+    setIsLogin(false);
+  });
+  return <div>로그아웃 되었음</div>;
+};
+
+const MyDiary = ({ setIsLogin }) => {
+  return (
+    <div>
+      <h3>마이다이어리~</h3>
+      <button onClick={() => Logout(setIsLogin)}>로그아웃 하기~</button>
+    </div>
+  );
 };
 
 const Home = () => {
   const [isLogin, setIsLogin] = useState(false);
-  return isLogin ? <MyDiary /> : <Login setIsLogin={setIsLogin} />;
+  return isLogin ? (
+    <MyDiary setIsLogin={setIsLogin} />
+  ) : (
+    <Login setIsLogin={setIsLogin} />
+  );
 };
 
 const Layout = () => {
