@@ -1,37 +1,31 @@
-import { useEffect, useState } from "react";
-import { Routes, Route, Outlet, useNavigate } from "react-router-dom";
-import "./App.css";
+import React, { useContext, useEffect, useState } from "react";
+
+const LoginContext = React.createContext();
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
-  return isLogin ? (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route path="*" element={<MyDiary />} />
-      </Route>
-    </Routes>
-  ) : (
-    <Cover />
+
+  return (
+    <LoginContext.Provider value={setIsLogin}>
+      {isLogin ? <MyDiary /> : <Cover />}
+    </LoginContext.Provider>
   );
 }
 
+// const useObserber = (hook, value) => {
+//   useEffect(hook(value));
+// };
+
 const Cover = () => {
-  // 한번 해봤으니까 라우터로 바꾸기...
   const [view, setView] = useState();
-  switch (view) {
-    case "join":
-      return <Join />;
-    case "login":
-      return <Login />;
-    default:
-      return (
-        <div>
-          <h3>비회원을 위한 홍보화면</h3>
-          <button onClick={() => setView("join")}>회원가입</button>
-          <button onClick={() => setView("login")}>로그인</button>
-        </div>
-      );
-  }
+  const init = (
+    <div>
+      <h3>비회원을 위한 홍보화면</h3>
+      <button onClick={() => setView(<Join />)}>회원가입</button>
+      <button onClick={() => setView(<Login />)}>로그인</button>
+    </div>
+  );
+  return view || init;
 };
 
 const Join = () => {
@@ -39,10 +33,13 @@ const Join = () => {
 };
 
 const Login = () => {
+  // const useClick = () => {
+  //   useContext(LoginContext)(true);
+  // };
   return (
     <div>
       <h3>로그인 페이지</h3>
-      <button>로그인</button>
+      {/* <button onClick={useClick}>로그인</button> */}
     </div>
   );
 };
@@ -66,9 +63,7 @@ const Layout = () => {
   return (
     <div className="layout">
       <header></header>
-      <main>
-        <Outlet />
-      </main>
+      <main>{/* <Outlet /> */}</main>
     </div>
   );
 };
