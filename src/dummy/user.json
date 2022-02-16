@@ -1,7 +1,23 @@
-{
-  "user_idx": 1,
-  "join_date": "2022-02-13",
-  "id": "user1",
-  "pw": "user1",
-  "matched_idx": 1
-}
+[
+  {
+    "user_idx": 1,
+    "join_date": "2022-02-13",
+    "id": "user1",
+    "pw": "user1",
+    "matched_user_idx": 3
+  },
+  {
+    "user_idx": 2,
+    "join_date": "2022-02-13",
+    "id": "user2",
+    "pw": "user2",
+    "matched_user_idx": -1
+  },
+  {
+    "user_idx": 3,
+    "join_date": "2022-02-15",
+    "id": "user3",
+    "pw": "user3",
+    "matched_user_idx": 1
+  }
+]
