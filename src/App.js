@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { registUser, isDuplicateId } from "./user";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
+  console.log(`render App`);
 
   return isLogin ? (
     <MyDiary setIsLogin={setIsLogin} />
@@ -11,6 +13,7 @@ function App() {
 }
 
 const MyDiary = ({ setIsLogin }) => {
+  console.log(`render MyDiary`);
   return (
     <div>
       <h3>마이다이어리~</h3>
@@ -31,15 +34,12 @@ const Content = () => (
 );
 
 const Cover = ({ setIsLogin }) => {
+  console.log(`render Cover`);
   const [view, setView] = useState();
   const init = (
     <div>
       <h3>비회원을 위한 홍보화면</h3>
-      <button
-        onClick={() =>
-          setView(<Join setView={setView} setIsLogin={setIsLogin} />)
-        }
-      >
+      <button onClick={() => setView(<Join setIsLogin={setIsLogin} />)}>
         회원가입
       </button>
       <button onClick={() => setView(<Login setIsLogin={setIsLogin} />)}>
@@ -50,13 +50,31 @@ const Cover = ({ setIsLogin }) => {
   return view || init;
 };
 
-const Join = ({ setView, setIsLogin }) => {
+const Join = ({ setIsLogin }) => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = e.target[0].value;
+    const pw = e.target[1].value;
+    return registUser(id, pw) ? setIsLogin(true) : setIsLogin(false);
+  };
+
   return (
     <div>
       <h3>회원가입폼</h3>
-      <button onClick={() => setView(<Login setIsLogin={setIsLogin} />)}>
-        가입완료
-      </button>
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <label>
+          아이디
+          <input name="id"></input>
+        </label>
+        <button onClick={(e) => isDuplicateId(e.target.parentElement[0].value)}>
+          중복검사
+        </button>
+        <label>
+          비밀번호
+          <input name="pw" type="password"></input>
+        </label>
+        <input type="submit" value="제출"></input>
+      </form>
     </div>
   );
 };
