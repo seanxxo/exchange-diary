@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { registUser, isDuplicateId } from "./user";
+import { registUser, isDuplicateId, login } from "./user";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -55,7 +55,7 @@ const Join = ({ setIsLogin }) => {
     e.preventDefault();
     const id = e.target[0].value;
     const pw = e.target[1].value;
-    return registUser(id, pw) ? setIsLogin(true) : setIsLogin(false);
+    registUser(id, pw) ? setIsLogin(true) : setIsLogin(false);
   };
 
   return (
@@ -80,15 +80,35 @@ const Join = ({ setIsLogin }) => {
 };
 
 const Login = ({ setIsLogin }) => {
-  const handleClick = () => {
-    setIsLogin(true);
+  const [loginErrorMessage, setLoginErrorMessage] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = e.target[0].value;
+    const pw = e.target[1].value;
+    const isLoginFail = login(id, pw);
+    !isLoginFail ? setIsLogin(true) : setLoginErrorMessage(isLoginFail);
   };
   return (
     <div>
-      <h3>로그인 페이지</h3>
-      <button onClick={handleClick}>로그인</button>
+      <h3>로그인 폼</h3>
+      <SoftAlert message={loginErrorMessage} />
+      <form onSubmit={(e) => handleSubmit(e)}>
+        <label>
+          아이디
+          <input name="id"></input>
+        </label>
+        <label>
+          비밀번호
+          <input name="pw" type="password"></input>
+        </label>
+        <input type="submit" value="제출"></input>
+      </form>
     </div>
   );
+};
+
+const SoftAlert = ({ message }) => {
+  return message ? <div>{message}</div> : null;
 };
 
 const Logout = ({ setIsLogin }) => {
