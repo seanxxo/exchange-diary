@@ -51,6 +51,7 @@ const Cover = ({ setIsLogin }) => {
 };
 
 const Join = ({ setIsLogin }) => {
+  const [joinErrorMessage, setJoinErrorMessage] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
     const id = e.target[0].value;
@@ -61,12 +62,18 @@ const Join = ({ setIsLogin }) => {
   return (
     <div>
       <h3>회원가입폼</h3>
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <SoftAlert message={joinErrorMessage} />
+      <form onSubmit={handleSubmit}>
         <label>
           아이디
-          <input name="id"></input>
+          <input name="id" type="email"></input>
         </label>
-        <button onClick={(e) => isDuplicateId(e.target.parentElement[0].value)}>
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            isDuplicateId(e.target.parentElement[0].value, setJoinErrorMessage);
+          }}
+        >
           중복검사
         </button>
         <label>
@@ -80,22 +87,38 @@ const Join = ({ setIsLogin }) => {
 };
 
 const Login = ({ setIsLogin }) => {
-  const [loginErrorMessage, setLoginErrorMessage] = useState("");
+  const [loginErrMsg, setLoginErrMsg] = useState("");
+  const [value, setValue] = useState("");
+
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const id = e.target[0].value;
     const pw = e.target[1].value;
-    const isLoginFail = login(id, pw);
-    !isLoginFail ? setIsLogin(true) : setLoginErrorMessage(isLoginFail);
+    const loginWithInput = login(id, pw);
+    if (loginWithInput.result) {
+      setIsLogin(true);
+    } else {
+      setLoginErrMsg(loginWithInput.errMsg);
+    }
   };
+
   return (
     <div>
       <h3>로그인 폼</h3>
-      <SoftAlert message={loginErrorMessage} />
-      <form onSubmit={(e) => handleSubmit(e)}>
+      <SoftAlert message={loginErrMsg} />
+      <form onSubmit={handleSubmit}>
         <label>
           아이디
-          <input name="id"></input>
+          <input
+            name="id"
+            type="email"
+            onChange={handleChange}
+            value={value}
+          ></input>
         </label>
         <label>
           비밀번호
