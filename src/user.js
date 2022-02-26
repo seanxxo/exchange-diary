@@ -1,7 +1,7 @@
 const registUser = (id, pw) => true;
 
-const isDuplicateId = (inputID, setJoinErrorMessage) =>
-  false ? setJoinErrorMessage(`이미 가입된 email`) : null;
+const isDuplicateId = (inputID, setJoinErrMsg) =>
+  false ? setJoinErrMsg(`이미 가입된 email`) : null;
 
 const login = (id, pw) => {
   let result = false;

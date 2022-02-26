@@ -51,19 +51,25 @@ const Cover = ({ setIsLogin }) => {
 };
 
 const Join = ({ setIsLogin }) => {
-  const [joinErrorMessage, setJoinErrorMessage] = useState("");
+  const [joinErrMsg, setJoinErrMsg] = useState("");
+  const [values, setValues] = useState({});
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = e.target[0].value;
-    const pw = e.target[1].value;
-    registUser(id, pw) ? setIsLogin(true) : setIsLogin(false);
+    registUser(values.id, values.pw) ? setIsLogin(true) : setIsLogin(false);
+  };
+
+  const handleChange = (e) => {
+    const tmpValues = { ...values };
+    tmpValues[e.target.name] = e.target.value;
+    setValues(tmpValues);
   };
 
   return (
     <div>
       <h3>회원가입폼</h3>
-      <SoftAlert message={joinErrorMessage} />
-      <form onSubmit={handleSubmit}>
+      <SoftAlert message={joinErrMsg} />
+      <form onSubmit={handleSubmit} onChange={handleChange}>
         <label>
           아이디
           <input name="id" type="email"></input>
@@ -71,7 +77,7 @@ const Join = ({ setIsLogin }) => {
         <button
           onClick={(e) => {
             e.preventDefault();
-            isDuplicateId(e.target.parentElement[0].value, setJoinErrorMessage);
+            isDuplicateId(values.id, setJoinErrMsg);
           }}
         >
           중복검사
@@ -88,17 +94,17 @@ const Join = ({ setIsLogin }) => {
 
 const Login = ({ setIsLogin }) => {
   const [loginErrMsg, setLoginErrMsg] = useState("");
-  const [value, setValue] = useState("");
+  const [values, setValues] = useState({});
 
   const handleChange = (e) => {
-    setValue(e.target.value);
+    const tmpValues = { ...values };
+    tmpValues[e.target.name] = e.target.value;
+    setValues(tmpValues);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = e.target[0].value;
-    const pw = e.target[1].value;
-    const loginWithInput = login(id, pw);
+    const loginWithInput = login(values.id, values.pw);
     if (loginWithInput.result) {
       setIsLogin(true);
     } else {
@@ -110,15 +116,10 @@ const Login = ({ setIsLogin }) => {
     <div>
       <h3>로그인 폼</h3>
       <SoftAlert message={loginErrMsg} />
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onChange={handleChange}>
         <label>
           아이디
-          <input
-            name="id"
-            type="email"
-            onChange={handleChange}
-            value={value}
-          ></input>
+          <input name="id" type="email"></input>
         </label>
         <label>
           비밀번호
