@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registUser, isDuplicateId, login } from "./user";
-import { Form, Input } from "./Form";
-import { SoftAlert, Button } from "./Button";
+import { Form, Input } from "./common/Form";
+import { SoftAlert, Button } from "./common/etc";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
