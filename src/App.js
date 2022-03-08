@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { registUser, isDuplicateId, login } from "./user";
+import { Form, Input } from "./Form";
+import { SoftAlert, Button } from "./Button";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -39,12 +41,14 @@ const Cover = ({ setIsLogin }) => {
   const init = (
     <div>
       <h3>비회원을 위한 홍보화면</h3>
-      <button onClick={() => setView(<Join setIsLogin={setIsLogin} />)}>
-        회원가입
-      </button>
-      <button onClick={() => setView(<Login setIsLogin={setIsLogin} />)}>
-        로그인
-      </button>
+      <Button
+        label="회원가입"
+        handleClick={() => setView(<Join setIsLogin={setIsLogin} />)}
+      />
+      <Button
+        label="로그인"
+        handleClick={() => setView(<Login setIsLogin={setIsLogin} />)}
+      />
     </div>
   );
   return view || init;
@@ -52,59 +56,46 @@ const Cover = ({ setIsLogin }) => {
 
 const Join = ({ setIsLogin }) => {
   const [joinErrMsg, setJoinErrMsg] = useState("");
-  const [values, setValues] = useState({});
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    registUser(values.id, values.pw) ? setIsLogin(true) : setIsLogin(false);
-  };
-
-  const handleChange = (e) => {
-    const tmpValues = { ...values };
-    tmpValues[e.target.name] = e.target.value;
-    setValues(tmpValues);
+  let id = "";
+  const getId = (values) => {
+    id = values.id;
   };
 
   return (
     <div>
       <h3>회원가입폼</h3>
       <SoftAlert message={joinErrMsg} />
-      <form onSubmit={handleSubmit} onChange={handleChange}>
-        <label>
-          아이디
-          <input name="id" type="email"></input>
-        </label>
-        <button
-          onClick={(e) => {
+      <Form
+        handleSubmit={(values) => {
+          registUser(values.id, values.pw)
+            ? setIsLogin(true)
+            : setIsLogin(false);
+        }}
+        observer={getId}
+      >
+        <Input label="아이디" name="id" type="email" />
+        <Button
+          label="중복검사"
+          handleClick={(e) => {
             e.preventDefault();
-            isDuplicateId(values.id, setJoinErrMsg);
+            isDuplicateId(id, setJoinErrMsg);
           }}
-        >
-          중복검사
-        </button>
-        <label>
-          비밀번호
-          <input name="pw" type="password"></input>
-        </label>
-        <input type="submit" value="제출"></input>
-      </form>
+        />
+        <Input label="비밀번호" name="pw" type="password" />
+      </Form>
     </div>
   );
 };
 
 const Login = ({ setIsLogin }) => {
   const [loginErrMsg, setLoginErrMsg] = useState("");
-  const [values, setValues] = useState({});
-
-  const handleChange = (e) => {
-    const tmpValues = { ...values };
-    tmpValues[e.target.name] = e.target.value;
-    setValues(tmpValues);
+  let inputs = {};
+  const getInputs = (values) => {
+    inputs = values;
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const loginWithInput = login(values.id, values.pw);
+    const loginWithInput = login(inputs.id, inputs.pw);
     if (loginWithInput.result) {
       setIsLogin(true);
     } else {
@@ -116,30 +107,16 @@ const Login = ({ setIsLogin }) => {
     <div>
       <h3>로그인 폼</h3>
       <SoftAlert message={loginErrMsg} />
-      <form onSubmit={handleSubmit} onChange={handleChange}>
-        <label>
-          아이디
-          <input name="id" type="email"></input>
-        </label>
-        <label>
-          비밀번호
-          <input name="pw" type="password"></input>
-        </label>
-        <input type="submit" value="제출"></input>
-      </form>
+      <Form onSubmit={handleSubmit} observer={getInputs}>
+        <Input label="아이디" name="id" type="email" />
+        <Input label="비밀번호" name="pw" type="password" />
+      </Form>
     </div>
   );
 };
 
-const SoftAlert = ({ message }) => {
-  return message ? <div>{message}</div> : null;
-};
-
 const Logout = ({ setIsLogin }) => {
-  const handleClick = () => {
-    setIsLogin(false);
-  };
-  return <button onClick={handleClick}>로그아웃</button>;
+  return <Button label="로그아웃" handleClick={() => setIsLogin(false)} />;
 };
 
 export default App;
