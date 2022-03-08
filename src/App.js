@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { registUser, isDuplicateId, login } from "./user";
-import { Form, Input } from "./common/Form";
+import { Form, EmailIdInput, PasswordInput } from "./common/Form";
 import { SoftAlert, Button } from "./common/etc";
 
 function App() {
@@ -66,6 +66,7 @@ const Join = ({ setIsLogin }) => {
       <h3>회원가입폼</h3>
       <SoftAlert message={joinErrMsg} />
       <Form
+        title="회원가입"
         handleSubmit={(values) => {
           registUser(values.id, values.pw)
             ? setIsLogin(true)
@@ -73,7 +74,7 @@ const Join = ({ setIsLogin }) => {
         }}
         observer={getId}
       >
-        <Input label="아이디" name="id" type="email" />
+        <EmailIdInput />
         <Button
           label="중복검사"
           handleClick={(e) => {
@@ -81,7 +82,7 @@ const Join = ({ setIsLogin }) => {
             isDuplicateId(id, setJoinErrMsg);
           }}
         />
-        <Input label="비밀번호" name="pw" type="password" />
+        <PasswordInput />
       </Form>
     </div>
   );
@@ -107,9 +108,9 @@ const Login = ({ setIsLogin }) => {
     <div>
       <h3>로그인 폼</h3>
       <SoftAlert message={loginErrMsg} />
-      <Form onSubmit={handleSubmit} observer={getInputs}>
-        <Input label="아이디" name="id" type="email" />
-        <Input label="비밀번호" name="pw" type="password" />
+      <Form title="로그인" onSubmit={handleSubmit} observer={getInputs}>
+        <EmailIdInput />
+        <PasswordInput />
       </Form>
     </div>
   );
