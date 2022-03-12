@@ -19,9 +19,7 @@ const Form = ({ title, handleSubmit, observer, children }) => {
       onChange={handleChange}
     >
       {children}
-      <div>
-        <input type="submit" value={title} />
-      </div>
+      <input type="submit" value={title} />
     </form>
   );
 };

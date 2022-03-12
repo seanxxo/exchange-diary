@@ -6,7 +6,7 @@ const isDuplicateId = (inputID, setJoinErrMsg) =>
 const login = (id, pw) => {
   let result = false;
   let errMsg = "";
-  false ? (result = true) : (errMsg = "error because of ...");
+  true ? (result = true) : (errMsg = "error because of ...");
   return { result, errMsg };
 };
 

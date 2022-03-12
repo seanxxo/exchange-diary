@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { registUser, isDuplicateId, login } from "./user";
-import { Form, EmailIdInput, PasswordInput } from "./common/Form";
+import { Form, EmailIdInput, PasswordInput, Input } from "./common/Form";
 import { SoftAlert, Button } from "./common/etc";
+import {
+  getNextArticles,
+  getTodayArticlePair,
+  postTodayArticle,
+} from "./articles";
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);
@@ -26,14 +31,71 @@ const MyDiary = ({ setIsLogin }) => {
   );
 };
 
-const Content = () => (
-  <div>
-    <h3>접속 첫 화면</h3>
-    <button>오늘 글 쓰기</button>
-    <div>n분 후 열람 가능...</div>
-    <ul>지난 글 목록</ul>
-  </div>
-);
+const Content = () => {
+  // 새 글 요청과 갱신...
+  // const [todayArticlePair, setTodayArticlePair] = useState();
+  const [view, setView] = useState();
+  const todayArticlePair = getTodayArticlePair();
+  const init = (
+    <Button
+      label="오늘 일기 쓰기"
+      handleClick={() => {
+        setView(postForm);
+      }}
+    />
+  );
+  const postForm = (
+    <Form title="글쓰기" handleSubmit={postTodayArticle}>
+      <Input name="post" type="textarea" />
+      <Button label="취소" handleClick={() => setView(init)} />
+    </Form>
+  );
+  return (
+    <div>
+      <h3>접속 첫 화면</h3>
+      {todayArticlePair.users ? (
+        <Article article={todayArticlePair.users} />
+      ) : (
+        view || init
+      )}
+      <Article article={todayArticlePair} coveredMsg={"n분 후 열람 가능..."} />
+      <PastArticles preArticle={todayArticlePair} />
+    </div>
+  );
+};
+
+const Article = ({ article, coveredMsg }) => {
+  return (
+    <div>
+      {article.articles_idx}
+      <br />
+      {coveredMsg}
+    </div>
+  );
+};
+
+const PastArticles = ({ preArticle }) => {
+  const [articles, setArticles] = useState([]);
+  const getMore = () => {
+    const more = getNextArticles(preArticle.articles_idx, 5);
+    if (articles) {
+      setArticles([...articles, ...more]);
+    } else {
+      setArticles([...more]);
+    }
+  };
+
+  return (
+    <ul>
+      {articles.map((article) => (
+        <li key={article.articles_idx}>
+          <Article article={article} />
+        </li>
+      ))}
+      <Button label="글 5개 불러오기" handleClick={getMore} />
+    </ul>
+  );
+};
 
 const Cover = ({ setIsLogin }) => {
   console.log(`render Cover`);
@@ -95,8 +157,8 @@ const Login = ({ setIsLogin }) => {
     inputs = values;
   };
 
-  const handleSubmit = (e) => {
-    const loginWithInput = login(inputs.id, inputs.pw);
+  const handleSubmit = (submitValues) => {
+    const loginWithInput = login(submitValues.id, submitValues.pw);
     if (loginWithInput.result) {
       setIsLogin(true);
     } else {
@@ -108,7 +170,7 @@ const Login = ({ setIsLogin }) => {
     <div>
       <h3>로그인 폼</h3>
       <SoftAlert message={loginErrMsg} />
-      <Form title="로그인" onSubmit={handleSubmit} observer={getInputs}>
+      <Form title="로그인" handleSubmit={handleSubmit} observer={getInputs}>
         <EmailIdInput />
         <PasswordInput />
       </Form>
