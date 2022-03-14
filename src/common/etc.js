@@ -3,7 +3,11 @@ const SoftAlert = ({ message }) => {
 };
 
 const Button = ({ label, handleClick }) => {
-  return <button onClick={handleClick}>{label}</button>;
+  return (
+    <button onClick={handleClick} type="button">
+      {label}
+    </button>
+  );
 };
 
 export { SoftAlert, Button };

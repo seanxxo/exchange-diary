@@ -139,8 +139,7 @@ const Join = ({ setIsLogin }) => {
         <EmailIdInput />
         <Button
           label="중복검사"
-          handleClick={(e) => {
-            e.preventDefault();
+          handleClick={() => {
             isDuplicateId(id, setJoinErrMsg);
           }}
         />
