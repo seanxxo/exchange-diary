@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { registUser, isDuplicateId, login } from "./user";
 import { Form, EmailIdInput, PasswordInput, Input } from "./common/Form";
 import { SoftAlert, Button } from "./common/etc";
 import {
   getNextArticles,
   getTodayArticlePair,
+  getLastArticle,
   postTodayArticle,
 } from "./articles";
 
@@ -32,10 +33,30 @@ const MyDiary = ({ setIsLogin }) => {
 };
 
 const Content = () => {
-  // 새 글 요청과 갱신...
-  // const [todayArticlePair, setTodayArticlePair] = useState();
+  console.log(`render Content`);
+  return (
+    <div>
+      <h3>접속 첫 화면</h3>
+      <TodayArticlePair />
+      <PastArticles />
+    </div>
+  );
+};
+
+const TodayArticlePair = () => {
+  const [todayArticlePair, setTodayArticlePair] = useState({
+    byUser: null,
+    byPartner: null,
+  });
   const [view, setView] = useState();
-  const todayArticlePair = getTodayArticlePair();
+  const loginUser = 1;
+  useEffect(() => {
+    if (!Object.values(todayArticlePair).every((value) => value !== null)) {
+      getTodayArticlePair(loginUser).then((pair) => {
+        setTodayArticlePair(pair);
+      });
+    }
+  });
   const init = (
     <Button
       label="오늘 일기 쓰기"
@@ -50,34 +71,31 @@ const Content = () => {
       <Button label="취소" handleClick={() => setView(init)} />
     </Form>
   );
+
   return (
     <div>
-      <h3>접속 첫 화면</h3>
-      {todayArticlePair.users ? (
-        <Article article={todayArticlePair.users} />
+      {todayArticlePair.byUser ? (
+        <Article article={todayArticlePair.byUser} />
       ) : (
         view || init
       )}
-      <Article article={todayArticlePair} coveredMsg={"n분 후 열람 가능..."} />
-      <PastArticles preArticle={todayArticlePair} />
+      {todayArticlePair.byPartner ? (
+        <Article
+          article={todayArticlePair.byPartner}
+          coveredMsg={"n분 후 열람 가능..."}
+        />
+      ) : (
+        <Button label="독촉하기" />
+      )}
     </div>
   );
 };
 
-const Article = ({ article, coveredMsg }) => {
-  return (
-    <div>
-      {article.articles_idx}
-      <br />
-      {coveredMsg}
-    </div>
-  );
-};
-
-const PastArticles = ({ preArticle }) => {
+const PastArticles = () => {
   const [articles, setArticles] = useState([]);
+  const lastArticle = getLastArticle();
   const getMore = () => {
-    const more = getNextArticles(preArticle.articles_idx, 5);
+    const more = getNextArticles(lastArticle.articles_idx, 5);
     if (articles) {
       setArticles([...articles, ...more]);
     } else {
@@ -97,6 +115,16 @@ const PastArticles = ({ preArticle }) => {
   );
 };
 
+const Article = ({ article, coveredMsg }) => {
+  if (!article) return null;
+  return (
+    <div>
+      {article.articles_idx}
+      <br />
+      {coveredMsg}
+    </div>
+  );
+};
 const Cover = ({ setIsLogin }) => {
   console.log(`render Cover`);
   const [view, setView] = useState();
