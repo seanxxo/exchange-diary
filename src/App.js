@@ -93,18 +93,21 @@ const TodayArticlePair = () => {
 
 const PastArticles = () => {
   const [articles, setArticles] = useState([]);
-  const lastArticle = getLastArticle();
+  const [msg, setMsg] = useState("");
   const getMore = () => {
-    const more = getNextArticles(lastArticle.articles_idx, 5);
-    if (articles) {
-      setArticles([...articles, ...more]);
-    } else {
-      setArticles([...more]);
-    }
+    const lastIdx = articles[0]
+      ? articles[articles.length - 1].articles_idx
+      : getLastArticle().then((article) => article.articles_idx);
+    getNextArticles(lastIdx, 5).then((more) => {
+      more[0]
+        ? setArticles([...articles, ...more])
+        : setMsg("더 불러올 글이 없음");
+    });
   };
 
   return (
     <ul>
+      <SoftAlert message={msg} />
       {articles.map((article) => (
         <li key={article.articles_idx}>
           <Article article={article} />
