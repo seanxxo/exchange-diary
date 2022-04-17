@@ -1,26 +1,19 @@
-import Date from "./common/date";
+import Date from "./common/Date";
 
-const apiInterface = {
-  get: () => {},
-  post: () => {},
-  put: () => {},
-  patch: () => {},
-  delete: () => {},
-};
+const tmpToday = new Date("2022-02-16").removeTime();
 
 const articles = {
-  get: () => {
-    return fetch("dummy/articles.json").then((response) => response.json());
+  get() {
+    return fetch("/articles").then((response) => response.json());
   },
 };
 
 const getTodayArticlePair = async (loginUserIdx) => {
-  const today = new Date("2022-02-16").removeTime();
   const pairs = await articles
     .get()
     .then((articles) =>
       articles.filter(
-        (article) => new Date(article.date).removeTime() === today
+        (article) => new Date(article.date).removeTime() === tmpToday
       )
     );
   return {
@@ -34,11 +27,7 @@ const getTodayArticlePair = async (loginUserIdx) => {
 const getNextArticles = async (preIdx, num) => {
   return articles.get().then((articles) =>
     articles
-      .filter(
-        (article) =>
-          new Date(article.date).removeTime() !==
-          new Date("2022-02-16").removeTime()
-      )
+      .filter((article) => new Date(article.date).removeTime() !== tmpToday)
       .sort((a, b) => {
         if (a.articles_idx < b.articles_idx) {
           return 1;

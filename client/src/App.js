@@ -95,7 +95,7 @@ const PastArticles = () => {
   const [articles, setArticles] = useState([]);
   const [msg, setMsg] = useState("");
   const getMore = () => {
-    const lastIdx = articles[0]
+    const lastIdx = articles.length
       ? articles[articles.length - 1].articles_idx
       : getLastArticle().then((article) => article.articles_idx);
     getNextArticles(lastIdx, 5).then((more) => {
