@@ -13,7 +13,8 @@ app.get("/", (_, response) => {
 
 app.get("/articles", (_, response) => {
   response.sendFile(path.join(dummy, "articles.json"));
-  response.json;
 });
+
+app.post("/articles", (request, response) => {});
 
 app.listen(8090);
