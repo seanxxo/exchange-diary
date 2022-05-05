@@ -785,6 +785,15 @@
     "yargs-parser": "^20.2.9",
     "yocto-queue": "^0.1.0"
   },
+  "nodemonConfig": {
+    "watch": [
+      "server/",
+      "client/build/"
+    ],
+    "ignore": [
+      "server/dummy"
+    ]
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
