@@ -1,6 +1,7 @@
 import Date from "./common/Date";
 
 const tmpToday = new Date("2022-02-16").removeTime();
+const tmpUserIdx = 1;
 
 const articles = {
   get() {
@@ -9,47 +10,25 @@ const articles = {
   post(content) {
     const option = {
       method: "POST",
-      // mode: 'cors', // no-cors, cors, *same-origin
-      // cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
-      // credentials: 'same-origin', // include, *same-origin, omit
       headers: {
         "Content-Type": "application/json",
-        // 'Content-Type': 'application/x-www-form-urlencoded',
       },
-      // redirect: 'follow', // manual, *follow, error
-      // referrer: 'no-referrer', // no-referrer, *client
       body: JSON.stringify({
-        articles: {
-          content: content,
-        },
-        // 유저 정보는 전역에
-        user: { user_idx: 1 },
+        articles: { content: content },
+        user: { user_idx: tmpUserIdx },
       }),
     };
-    return fetch("/articles", option).then((response) => {
-      console.log(response);
-    });
+    return fetch("/articles", option).then((response) => response.json());
   },
   delete(articles_idx) {
     const option = {
       method: "DELETE",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
-      // body: JSON.stringify({
-      //   articles: {
-      //     articles_idx: articles_idx,
-      //   },
-      // }),
     };
     return fetch(`/articles/${articles_idx}`, option).then((response) =>
-      console.log(response)
+      response.json()
     );
   },
 };
-
-articles.post("Form에 입력된...text~~");
-articles.delete(1);
 
 const getTodayArticlePair = async (loginUserIdx) => {
   const pairs = await articles
@@ -88,10 +67,16 @@ const getNextArticles = async (preIdx, num) => {
   );
 };
 
-const postTodayArticle = () => true;
+const postTodayArticle = (input) => {
+  return articles.post(input.content);
+};
 
 const getLastArticle = () => {
   return articles.get().then((articles) => articles[articles.length - 1]);
+};
+
+const deleteArticle = (article) => {
+  return articles.delete(article.articles_idx);
 };
 
 export {
@@ -99,4 +84,5 @@ export {
   getNextArticles,
   getLastArticle,
   postTodayArticle,
+  deleteArticle,
 };

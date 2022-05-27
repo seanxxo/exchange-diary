@@ -29,19 +29,10 @@
   {
     "articles_idx": 4,
     "date": "2022-02-16",
-    "write_user_idx": 1,
-    "recieve_user_idx": 3,
-    "content": "",
-    "is_read": true,
-    "is_reply": true
-  },
-  {
-    "articles_idx": 5,
-    "date": "2022-02-16",
     "write_user_idx": 3,
     "recieve_user_idx": 1,
     "content": "",
     "is_read": true,
-    "is_reply": false
+    "is_reply": true
   }
 ]

@@ -12,6 +12,7 @@ app.get("/", (_, response) => {
 });
 
 const fs = require("fs");
+const { articlesInterface } = require("./dbObj");
 
 const local = {
   id: "",
@@ -49,11 +50,30 @@ const local = {
 
 const articles = {
   file: "articles.json",
+  tmpToday: "2022-02-16",
+  tmpUser: {
+    user_idx: 1,
+    join_date: "2022-02-13",
+    id: "user1@mail.com",
+    pw: "user1",
+    matched_user_idx: 3,
+  },
   select() {
     return local.readJson(this.file);
   },
   insert(articles, user) {
-    local.writeJson(this.file, [...local.readJson(this.file), articles]);
+    user = this.tmpUser;
+    local.writeJson(this.file, [
+      ...local.readJson(this.file),
+      {
+        ...articlesInterface,
+        ...articles,
+        write_user_idx: user.user_idx,
+        receive_user_idx: user.matched_user_idx,
+        date: this.tmpToday,
+      },
+    ]);
+    return true;
   },
   delete(articles_idx) {
     local.writeJson(
@@ -64,6 +84,7 @@ const articles = {
           (preArticle) => preArticle.articles_idx !== Number(articles_idx)
         )
     );
+    return true;
   },
 };
 

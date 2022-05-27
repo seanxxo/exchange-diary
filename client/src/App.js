@@ -7,6 +7,7 @@ import {
   getTodayArticlePair,
   getLastArticle,
   postTodayArticle,
+  deleteArticle,
 } from "./articles";
 
 function App() {
@@ -66,8 +67,19 @@ const TodayArticlePair = () => {
     />
   );
   const postForm = (
-    <Form title="글쓰기" handleSubmit={postTodayArticle}>
-      <Input name="post" type="textarea" />
+    <Form
+      title="글쓰기"
+      handleSubmit={(values) =>
+        postTodayArticle(values).then((result) => {
+          if (result) {
+            getTodayArticlePair(loginUser).then((pair) => {
+              setTodayArticlePair(pair);
+            });
+          }
+        })
+      }
+    >
+      <Input name="content" type="textarea" isRequired={true} />
       <Button label="취소" handleClick={() => setView(init)} />
     </Form>
   );
@@ -123,6 +135,7 @@ const Article = ({ article, coveredMsg }) => {
   return (
     <div>
       {article.articles_idx}
+      <Button label="❌" handleClick={() => deleteArticle(article)} />
       <br />
       {coveredMsg}
     </div>

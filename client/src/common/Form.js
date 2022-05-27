@@ -24,12 +24,12 @@ const Form = ({ title, handleSubmit, observer, children }) => {
   );
 };
 
-const Input = ({ label, name, type, hint }) => {
+const Input = ({ label, name, type, hint, isRequired }) => {
   return (
     <label>
       <div className="label">{label}</div>
       <div className="hint">{hint}</div>
-      <input name={name} type={type}></input>
+      <input name={name} type={type} required={isRequired}></input>
     </label>
   );
 };
